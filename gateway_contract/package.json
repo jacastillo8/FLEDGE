@@ -1,0 +1,19 @@
+{
+	"name": "gateway_smart_contract",
+	"version": "1.0.0",
+	"description": "Gateway chaincode used to process cryptographic models",
+	"engines": {
+		"node": ">=8.4.0",
+		"npm": ">=5.3.0"
+	},
+	"scripts": {
+		"start": "node gateway-shim.js"
+	},
+	"engine-strict": true,
+	"author": "Jorge Castillo",
+	"license": "ISC",
+	"dependencies": {
+		"fabric-shim": "~1.4.0",
+		"node-seal": "^4.5.0"
+	}
+}
