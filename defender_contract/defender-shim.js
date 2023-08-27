@@ -20,7 +20,7 @@ async function bt2c(stub, endpoint, args=null) {
 }
 
 // This is a placeholder function used to include different defenses. 
-// Our defense implementation can be found in ...
+// Our defense implementation can be found in "../fledge_client/scripts/gkdeDefense.py"
 function filterPoison(models) {
     const scores = models.map(e => e.score)
     const ids = models.map(e => e.id)
