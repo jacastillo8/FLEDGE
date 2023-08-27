@@ -7,26 +7,18 @@ let { Wallets, Contract, Gateway, DefaultEventHandlerStrategies,
     DefaultQueryHandlerStrategies } = require('fabric-network')
 
 // Used to select relevant layers of model
-const FASHION_MODEL_LAYERS = ['layer1.0.weight', 'layer1.0.bias', 'layer1.1.weight', 'layer1.1.bias', 
-                                'layer2.0.weight', 'layer2.0.bias', 'layer2.1.weight', 'layer2.1.bias',
-                                'fc.weight', 'fc.bias']
-const MNIST_MODEL_LAYERS = ['conv1.weight', 'conv1.bias', 'layer1.0.fn.0.weight', 'layer1.0.fn.0.bias', 'layer1.0.fn.2.weight', 'layer1.0.fn.2.bias', 
-                            'layer1.1.weight', 'layer1.1.bias', 'layer1.3.weight', 'layer1.3.bias', 'layer2.0.fn.0.weight', 'layer2.0.fn.0.bias', 
-                            'layer2.0.fn.2.weight', 'layer2.0.fn.2.bias', 'layer2.1.weight', 'layer2.1.bias', 'layer2.3.weight', 'layer2.3.bias', 
-                            'fc.weight', 'fc.bias']
-const MALARIA_MODEL_LAYERS = ['conv1.weight', 'conv1.bias', 'layer1.0.fn.0.weight', 'layer1.0.fn.0.bias', 'layer1.0.fn.2.weight', 'layer1.0.fn.2.bias', 
-                                'layer1.1.weight', 'layer1.1.bias', 'layer1.3.weight', 'layer1.3.bias', 'layer2.0.fn.0.weight', 'layer2.0.fn.0.bias', 
-                                'layer2.0.fn.2.weight', 'layer2.0.fn.2.bias', 'layer2.1.weight', 'layer2.1.bias', 'layer2.3.weight', 'layer2.3.bias', 
-                                'layer3.0.fn.0.weight', 'layer3.0.fn.0.bias', 'layer3.0.fn.2.weight', 'layer3.0.fn.2.bias', 'layer3.1.weight', 'layer3.1.bias', 
-                                'layer3.3.weight', 'layer3.3.bias', 'layer4.0.fn.0.weight', 'layer4.0.fn.0.bias', 'layer4.0.fn.2.weight', 'layer4.0.fn.2.bias', 
-                                'layer4.1.weight', 'layer4.1.bias', 'layer4.3.weight', 'layer4.3.bias', 'fc.weight', 'fc.bias']
-const CIFAR10_MODEL_LAYERS = ['conv1.weight', 'conv1.bias', 'layer1.0.fn.0.weight', 'layer1.0.fn.0.bias', 'layer1.0.fn.2.weight', 'layer1.0.fn.2.bias', 
-                                'layer1.1.weight', 'layer1.1.bias', 'layer1.3.weight', 'layer1.3.bias', 'layer2.0.fn.0.weight', 'layer2.0.fn.0.bias', 
-                                'layer2.0.fn.2.weight', 'layer2.0.fn.2.bias', 'layer2.1.weight', 'layer2.1.bias', 'layer2.3.weight', 'layer2.3.bias',
-                                'layer3.0.fn.0.weight', 'layer3.0.fn.0.bias', 'layer3.0.fn.2.weight', 'layer3.0.fn.2.bias', 'layer3.1.weight', 'layer3.1.bias', 
-                                'layer3.3.weight', 'layer3.3.bias', 'fc.weight', 'fc.bias']
+const MNIST_MODEL_LAYERS = ['layer1.0.weight', 'layer1.0.bias', 'fc.weight', 'fc.bias']
 
-const modelTypes = { MNIST: MNIST_MODEL_LAYERS, Fashion: FASHION_MODEL_LAYERS, CIFAR10: CIFAR10_MODEL_LAYERS, Malaria: MALARIA_MODEL_LAYERS }
+const CIFAR10_MODEL_LAYERS = ['conv1.weight', 'conv1.bias', 'layer1.0.fn.0.weight', 'layer1.0.fn.0.bias', 'layer1.0.fn.2.weight', 'layer1.0.fn.2.bias', 
+                            'layer1.1.weight', 'layer1.1.bias', 'layer1.3.weight', 'layer1.3.bias', 'layer2.0.fn.0.weight', 'layer2.0.fn.0.bias', 
+                            'layer2.0.fn.2.weight', 'layer2.0.fn.2.bias', 'layer2.1.weight', 'layer2.1.bias', 'layer2.3.weight', 'layer2.3.bias',
+                            'layer3.0.fn.0.weight', 'layer3.0.fn.0.bias', 'layer3.0.fn.2.weight', 'layer3.0.fn.2.bias', 'layer3.1.weight', 'layer3.1.bias', 
+                            'layer3.3.weight', 'layer3.3.bias', 'fc.weight', 'fc.bias']
+
+const Fashion_MODEL_LAYERS = ['layer1.0.weight', 'layer1.0.bias', 'layer1.1.weight', 'layer1.1.bias', 'layer2.0.weight', 'layer2.0.bias', 'layer2.1.weight', 
+                              'layer2.1.bias', 'fc.weight', 'fc.bias']
+
+const modelTypes = { MNIST: MNIST_MODEL_LAYERS, Fashion: Fashion_MODEL_LAYERS, CIFAR10: CIFAR10_MODEL_LAYERS }
 
 // Interfaces
 import { Client } from '../interfaces/client'
@@ -55,6 +47,10 @@ function getNonZeroRandom(min: number, max:number) {
     let random = Math.random() * (max - min) + min
     while (random === 0) random = Math.random() * (max - min) + min
     return random
+}
+
+function randomIntFromInterval(min:number, max:number) { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
 function generateDelta(array: number[]) {
@@ -107,7 +103,7 @@ export class FledgeClient {
     private crypto: FledgeCrypto = new FledgeCrypto()
     private degree: number = 0
 
-    constructor(private experimentLocation: string, private client: Client,
+    constructor(private experimentLocation: string, private client: Client, public learningTask: string,
                 public malicious: boolean=false, public id: number=0, public maxNumberOfCiphersPerTx: number=60) {
     }
 
@@ -162,7 +158,7 @@ export class FledgeClient {
     }
 
     inspectModel() {
-        const modelName = this.malicious ? `M${this.id}`:`B${this.id}`
+        const modelName = this.malicious ? `M${randomIntFromInterval(0,14)}`:`B${randomIntFromInterval(0,29)}`
         const model = JSON.parse(fs.readFileSync(`${this.experimentLocation}/${modelName}.json`))
         const layers = this.validateLayers(Object.keys(model))
         const abstractModel = analyzeModel(layers, model)
@@ -170,7 +166,7 @@ export class FledgeClient {
     }
 
     validateLayers(layers: any) {
-        let data = this.experimentLocation.split('/').pop()
+        let data = this.learningTask
         const modelType = modelTypes[data as keyof typeof modelTypes]
         const valid: any = []
         for (let l of layers) {
@@ -181,9 +177,9 @@ export class FledgeClient {
 
     // ########################## Gateway Functions ##########################
     // Functions used to interface with gateway smart contract
-    async initContract(name:string='', task:string='MNIST', owner:string='0000', rounds:number=5, reward:number=10) {
+    async initContract(name:string='', owner:string='0000', rounds:number=5, reward:number=10) {
         let arg0 = { owner, rounds, reward }
-        let arg1 = { name, type: task, limit: this.maxNumberOfCiphersPerTx }
+        let arg1 = { name, type: this.learningTask, limit: this.maxNumberOfCiphersPerTx }
         let res = await this.contract.submitTransaction('initContract', JSON.stringify(arg0), JSON.stringify(arg1))
         return JSON.parse(res.toString('utf-8'))
     }
@@ -203,7 +199,7 @@ export class FledgeClient {
         let model = JSON.parse(modelObject.toString('utf-8')).model
         const structure = JSON.parse(modelObject.toString('utf-8')).structure
         const flattenedModel = model.flat()
-        const data = this.experimentLocation.split('/').pop()
+        const data = this.learningTask
         const modelTemplate = modelTypes[data as keyof typeof modelTypes]
         model = reassembleModel(flattenedModel, structure, modelTemplate)
         return model
@@ -227,7 +223,7 @@ export class FledgeClient {
         }
         let buffer = await this.contract.submitTransaction('commitLocalModel', JSON.stringify({ id, delta: model.delta, length: `${numberOfTx}` }))
         let score = JSON.parse(buffer.toString('utf-8'))
-        return { score, count: numberOfTx }
+        return { score: score.score, count: numberOfTx }
     }
 
     async requestAggregation() {

@@ -158,41 +158,6 @@ var Chaincode = class {
         return Buffer.from(JSON.stringify({}))
     }
 
-    // TODO - remove
-    /*async getTTx(stub, args) {
-        const ttx = JSON.parse(args[0]).ttx
-        let string = ''
-        if (['TT4', 'TT5', 'TT6'].includes(ttx)) {
-            string = await bt2c(stub, 'getTTx', [JSON.stringify({ ttx })])
-            string = string.ttx
-        } else if (['TT2', 'TT3'].includes(ttx)) {
-            const iterator = await stub.getHistoryForKey(`${ttx}`)
-            let results = [];
-            while (true) {
-                const res = await iterator.next();
-                if (res.value && res.value.value.toString()) {
-                    let record;
-                    try {
-                        record = JSON.parse(res.value.value.toString("utf8"));
-                    } catch (error) {
-                        record = res.value.value.toString("utf8");
-                    }
-                    results.push(record);
-                }
-                if (res.done) {
-                    await iterator.close();
-                    return Buffer.from(JSON.stringify(results));
-                }
-            }
-        } else {
-            const buffer = await stub.getState(`${ttx}`)
-            string = buffer.toString('utf8')
-            if (string === '') return Buffer.from(JSON.stringify({}))
-            string = JSON.parse(string)
-        }
-        return Buffer.from(JSON.stringify(string))
-    }*/
-
     async getGlobalModel(stub) {
         // TT7 - { id, plain, structure }
         const buffer = await stub.getState('TT7')

@@ -3,17 +3,18 @@ const fs = require('fs')
 const FledgeCrypto = require('./encryption').FledgeCrypto
 
 // Used to select relevant layers of model
-const MNIST_MODEL_LAYERS = ['conv1.weight', 'conv1.bias', 'layer1.0.fn.0.weight', 'layer1.0.fn.0.bias', 'layer1.0.fn.2.weight', 'layer1.0.fn.2.bias', 
-                            'layer1.1.weight', 'layer1.1.bias', 'layer1.3.weight', 'layer1.3.bias', 'layer2.0.fn.0.weight', 'layer2.0.fn.0.bias', 
-                            'layer2.0.fn.2.weight', 'layer2.0.fn.2.bias', 'layer2.1.weight', 'layer2.1.bias', 'layer2.3.weight', 'layer2.3.bias', 
-                            'fc.weight', 'fc.bias']
+const MNIST_MODEL_LAYERS = ['layer1.0.weight', 'layer1.0.bias', 'fc.weight', 'fc.bias']
+
 const CIFAR10_MODEL_LAYERS = ['conv1.weight', 'conv1.bias', 'layer1.0.fn.0.weight', 'layer1.0.fn.0.bias', 'layer1.0.fn.2.weight', 'layer1.0.fn.2.bias', 
                                 'layer1.1.weight', 'layer1.1.bias', 'layer1.3.weight', 'layer1.3.bias', 'layer2.0.fn.0.weight', 'layer2.0.fn.0.bias', 
                                 'layer2.0.fn.2.weight', 'layer2.0.fn.2.bias', 'layer2.1.weight', 'layer2.1.bias', 'layer2.3.weight', 'layer2.3.bias',
                                 'layer3.0.fn.0.weight', 'layer3.0.fn.0.bias', 'layer3.0.fn.2.weight', 'layer3.0.fn.2.bias', 'layer3.1.weight', 'layer3.1.bias', 
                                 'layer3.3.weight', 'layer3.3.bias', 'fc.weight', 'fc.bias']
+                        
+const Fashion_MODEL_LAYERS = ['layer1.0.weight', 'layer1.0.bias', 'layer1.1.weight', 'layer1.1.bias', 'layer2.0.weight', 'layer2.0.bias', 'layer2.1.weight', 
+                                'layer2.1.bias', 'fc.weight', 'fc.bias']
 
-const modelTemplates = { MNIST: MNIST_MODEL_LAYERS, Fashion: FASHION_MODEL_LAYERS, CIFAR10: CIFAR10_MODEL_LAYERS, Malaria: MALARIA_MODEL_LAYERS }
+const modelTemplates = { MNIST: MNIST_MODEL_LAYERS, Fashion: Fashion_MODEL_LAYERS, CIFAR10: CIFAR10_MODEL_LAYERS }
 
 let queue = [];
 function getModelStructure(root) {
@@ -59,7 +60,7 @@ async function encryptModel(encryptionContext, flattenedModel) {
                                                         degree: encryptionContext.degree, bitSizes: encryptionContext.bitSizes},
                                                         {pk: encryptionContext.keys.pk, sk: '', gk: '', rk: ''})
     const maxArrayLength = Math.floor((encryptionContext.degree / 2));
-    const modelPlains = [];
+    let modelPlains = [];
     const modelCiphers = []
     while (flattenedModel.length !== 0) {
         let plainChunk = []

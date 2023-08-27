@@ -1,0 +1,64 @@
+{
+	"info": {
+		"_postman_id": "41d840ed-76bf-4645-8d83-87088263b4db",
+		"name": "FLEDGE",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"owner\": \"Fledge\",\n\t\"orderers\": 1,\n\t\"block\": {\n\t\t\"timeout\": \"1s\",\n\t\t\"batch_size\": {\n\t\t\t\"max_messages\": \"20\",\n\t\t\t\"max_bytes\": \"50MB\"\n\t\t}\n\t},\n\t\"orgs\": \n\t\t[\n\t\t\t{\n\t\t\t\t\"name\": \"FledgeOrg\",\n\t\t\t\t\"users\": \n\t\t\t\t\t[\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"enrollmentID\": \"fledge_user1\",\n\t\t\t\t\t\t\t\"department\": \"Department1\"\n\t\t\t\t\t\t}\n\t\t\t\t\t]\n\t\t\t}\n\t\t],\n\t\"channels\": \n\t\t[\n\t\t\t{\n\t\t\t\t\"name\": \"FledgeChannel\",\n\t\t\t\t\"orgs\":\n\t\t\t\t\t[\n\t\t\t\t\t\t\"FledgeOrg\"\n\t\t\t\t\t],\n\t\t\t\t\"contracts\":\n\t\t\t\t\t[\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"name\": \"gateway_contract\",\n\t\t\t\t\t\t\t\"version\": \"1.0\"\n\t\t\t\t\t\t},\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\t\"name\": \"defender_contract\",\n\t\t\t\t\t\t\t\"version\": \"1.0\"\n\t\t\t\t\t\t}\n\t\t\t\t\t]\n\t\t\t}\n\t\t]\n}"
+				},
+				"url": {
+					"raw": "localhost:4000/api",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api"
+					]
+				},
+				"description": "- Register NEW blockchain instance. \n- Requires to send object with 'owner' (who it belongs to), 'orderers' (number of orderers), and 'organizations' (Array of organization objects) as properties. \n- Organizations contain 'name' (name of organization), and 'users' (Array of users).\n- Users contain 'name' (username), and 'department' (department name it belongs to)."
+			},
+			"response": []
+		},
+		{
+			"name": "Build",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:4000/api/:bid/build",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						":bid",
+						"build"
+					],
+					"variable": [
+						{
+							"key": "bid",
+							"value": "4ceab97bbb196c2e8d8673897da7e4bf921bd62e"
+						}
+					]
+				},
+				"description": "Sends command to build an instance with blockchain ID (bid)."
+			},
+			"response": []
+		}
+	]
+}

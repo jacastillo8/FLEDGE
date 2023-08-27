@@ -130,15 +130,7 @@ var Chaincode = class {
         // TT4 - { rc, phi }
         const tt4 = { rc, phi: anomalies }
         await stub.putState('TT4', Buffer.from(JSON.stringify(tt4)))
-        return Buffer.from(JSON.stringify({}))
+        return Buffer.from(JSON.stringify({ tt4, tt5, tt6 }))
     }
-
-    /*async getTTx(stub, args) {
-        const ttx = JSON.parse(args[0]).ttx
-        const buffer = await stub.getState(`${ttx}`)
-        const string = buffer.toString('utf8')
-        if (string === '') return Buffer.from(JSON.stringify({}))
-        return Buffer.from(JSON.stringify({ ttx: JSON.parse(string) }))
-    }*/
 }
 shim.start(new Chaincode());
