@@ -1,16 +1,12 @@
 import torch, os
 import torch.nn as nn
 from torch.nn.functional import cosine_similarity
+from torch.autograd import Variable
 import numpy as np
 from functools import reduce
 from operator import __add__
 from scipy.stats import gaussian_kde
 from scipy.signal import argrelextrema
-
-# If GPU used, then
-from torch.cuda import FloatTensor
-# Otherwise
-#from torch import FloatTensor
 
 CIFAR10_NAMED_PARAMETERS = {'conv1.weight', 'conv1.bias', 'layer1.0.fn.0.weight', 'layer1.0.fn.0.bias', 'layer1.0.fn.2.weight', 'layer1.0.fn.2.bias', 
                             'layer1.1.weight', 'layer1.1.bias', 'layer1.3.weight', 'layer1.3.bias', 'layer2.0.fn.0.weight', 'layer2.0.fn.0.bias', 
@@ -159,7 +155,7 @@ def get_one_vec_sorted_layers(model, layer_names, size=None):
     return sum_var
 
 def get_model(model_template, location):
-    model_template.load_state_dict(torch.load('{}'.format(location)))
+    model_template.load_state_dict(torch.load('{}'.format(location), map_location=torch.device('cpu')))
     return extract_weights(model_template)
 
 def get_sub_list(source, indices):
@@ -224,7 +220,7 @@ def evaluate_defense(learning_task, current_round):
     local_models = []
     # Collect available local models
     for m in os.listdir(model_dir):
-        # Provided global model has been trained for 5 rounds (G5)
+        # Provided global model has been trained for X rounds (GX)
         if m != 'G{}.pt'.format(current_round):
             model = get_model(model_template, '{}/{}'.format(model_dir, m))
             local_models.append(model)

@@ -1,5 +1,5 @@
 # FLEDGE
-The following repository presents the ledger-based Federated Learning framework FLEDGE that allows making parties accountable for their behavior and achieve reasonable efficiency for mitigating inference and poisoning attacks. It includes FLEDGE's client and smart contracts, i.e., Gateway and Defender Smart Contracts, to illustrate the security properties in FLEDGE. To illustrate its operations, we have also included 45 models (30 benign and 15 malicious) for MNIST, Fashion MNIST, CIFAR10 and Reddit. 
+The following repository presents the ledger-based Federated Learning framework FLEDGE that allows making parties accountable for their behavior and achieve reasonable efficiency for mitigating inference and poisoning attacks. It includes FLEDGE's client and smart contracts, i.e., Gateway and Defender Smart Contracts, to illustrate the security properties in FLEDGE. To illustrate its operations, we have also included 45 models (30 benign and 15 malicious) for MNIST, Fashion MNIST and CIFAR10. 
 ## Start Here
 ### Requirements
 To run the artifacts successfully, you are required to satisfy the following prerequisites.
@@ -52,5 +52,6 @@ The series of steps shown below are to be executed after successfully completing
    python gkdeDefense.py
    ```
 ## Disclaimers
+- This repository is provided as a experimental implementation for research purposes and should not be used in a production environment. We cannot guarantee security and correctness.
 - The models operated inside the client (`fledge_client/models`) were trained using a modified fork of the work of [Bagdasaryan et al.](https://github.com/ebagdasa/backdoor_federated_learning) (not included).
 - Model complexity will impact the performance of FLEDGE in terms of memory. Deployed docker containers from the Blockchain Manager may unexpectedly crash from memory exhaustion. For demonstration purposes, it is recommended to only operate MNIST and Fashion MNIST models as they are less complex than the others. This, however, does not apply to the artifact that evaluates the GDKE defense. 
