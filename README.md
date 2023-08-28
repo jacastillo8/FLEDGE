@@ -1,6 +1,11 @@
 # FLEDGE
 The following repository presents the ledger-based Federated Learning framework FLEDGE that allows making parties accountable for their behavior and achieve reasonable efficiency for mitigating inference and poisoning attacks. It includes FLEDGE's client and smart contracts, i.e., Gateway and Defender Smart Contracts, to illustrate the security properties in FLEDGE. To illustrate its operations, we have also included 45 models (30 benign and 15 malicious) for MNIST, Fashion MNIST and CIFAR10. 
 ## Start Here
+### Directories
+- `fledge_client`: Directory that contains all the corresponding code to interface with FLEDGE, the code to evaluate GKDE Defense, and the necessary models to successfully simulate a Federated Learning environment. 
+- `defender_contract`: Directory that contains the Defender Smart Contract and its dependencies.
+- `gateway_contract`: Directory that contains the Gateway Smart Contract and its dependencies. 
+- `FLEDGE_postman_collection`: JSON document that contains the API calls to deploy FLEDGE. 
 ### Requirements
 To run the artifacts successfully, you are required to satisfy the following prerequisites.
 1. OS: Ubuntu 18, RAM: 32GB
